@@ -1,4 +1,4 @@
-package com.rogosienski.online_bank_backend;
+package com.rogosienski.onlinebank.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
