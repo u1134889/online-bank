@@ -11,48 +11,40 @@ provider "kubernetes" {
     config_path = "~/.kube/config"
 }
 
-resource "kubernetes_service" "registry" {
+locals {
+    app_name = "online-bank"
+}
+
+resource "kubernetes_namespace" "online_bank" {
     metadata {
-        name = "registry"
-        namespace = "kube-system"
-    }
-    spec {
-        type = "LoadBalancer"
-        port {
-            port = 54118
-            target_port = 5000
-        }
-        selector = {
-            app = "registry"
-        }
+        name = "${local.app_name}-namespace"
     }
 }
 
-resource "kubernetes_deployment" "registry" {
+resource "kubernetes_deployment" "online_bank" {
     metadata {
-        name = "registry"
-        namespace = "kube-system"
+        name = "${local.app_name}-deployment"
+        namespace = kubernetes_namespace.online_bank.metadata[0].name
     }
     spec {
         replicas = 1
         selector {
             match_labels = {
-                app = "registry"
+                app = local.app_name
             }
         }
         template {
             metadata {
                 labels = {
-                    app = "registry"
+                    app = local.app_name
                 }
             }
             spec {
                 container {
-                    name = "registry"
-                    image = "registry:2"
-
+                    name = "${local.app_name}-container"
+                    image = "localhost:5000/rogosienski/online-bank-backend:0.0.1-SNAPSHOT"
                     port {
-                        container_port = 5000
+                        container_port = 8080
                     }
                 }
             }
@@ -60,16 +52,19 @@ resource "kubernetes_deployment" "registry" {
     }
 }
 
-# locals {
-#     app_name = "online-bank"
-# }
-
-# resource "kubernetes_namespace" "online_bank" {
-#     metadata {
-#         name = "${local.app_name}-namespace"
-#     }
-# }
-
-# resource "kubernetes_deployment" "online_bank" {
-    
-# }
+resource "kubernetes_service" "online_bank" {
+    metadata {
+        name = "${local.app_name}-deployment"
+        namespace = kubernetes_namespace.online_bank.metadata[0].name
+    }
+    spec {
+        selector = {
+            app = local.app_name
+        }
+        port {
+            port = 8081
+            target_port = 8080
+        }
+        type = "NodePort"
+    }
+}
