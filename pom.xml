@@ -37,5 +37,6 @@
 
     <modules>
         <module>infrastructure</module>
+        <module>online-bank-backend</module>
     </modules>
 </project>
