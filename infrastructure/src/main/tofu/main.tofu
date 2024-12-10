@@ -15,6 +15,11 @@ locals {
     app_name = "online-bank"
 }
 
+variable "backend_version" {
+    description = "The tag of the backend docker image to pull"
+    type = string
+}
+
 resource "kubernetes_namespace" "online_bank" {
     metadata {
         name = "${local.app_name}-namespace"
@@ -42,7 +47,7 @@ resource "kubernetes_deployment" "online_bank" {
             spec {
                 container {
                     name = "${local.app_name}-container"
-                    image = "localhost:5000/rogosienski/online-bank-backend:0.0.1-SNAPSHOT"
+                    image = "localhost:5000/rogosienski/online-bank-backend:${var.backend_version}"
                     port {
                         container_port = 8080
                     }

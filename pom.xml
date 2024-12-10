@@ -12,7 +12,7 @@
 
     <groupId>com.rogosienski</groupId>
     <artifactId>online-bank</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>online-bank</name>
     <description>Online Bank practice project</description>
     <packaging>pom</packaging>
