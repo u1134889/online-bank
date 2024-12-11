@@ -14,6 +14,7 @@ provider "kubernetes" {
 locals {
     app_name = "online-bank"
     parent_pom_path = abspath("${path.module}/../../../../pom.xml")
+    backend_version = data.external.backend_version.result.backend_version
 }
 
 data "external" "backend_version" {
@@ -47,7 +48,7 @@ resource "kubernetes_deployment" "online_bank" {
             spec {
                 container {
                     name = "${local.app_name}-container"
-                    image = "localhost:5000/rogosienski/online-bank-backend:${data.external.backend_version.result.backend_version}"
+                    image = "localhost:5000/rogosienski/online-bank-backend:${local.backend_version}"
                     port {
                         container_port = 8080
                     }
