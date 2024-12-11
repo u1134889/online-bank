@@ -36,10 +36,18 @@ public class AccountControllerTests {
     }
 
     @Test
-    void testModifyBalance() throws Exception {
+    void testModifyBalance_add() throws Exception {
         mvc.perform(put("/account/1").contentType(MediaType.APPLICATION_JSON).content("{\"value\":14,\"operation\":\"ADD\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.balance", is(24)));
+    }
+
+    @Test
+    void testModifyBalance_subtract() throws Exception {
+        mvc.perform(put("/account/1").contentType(MediaType.APPLICATION_JSON).content("{\"value\":7,\"operation\":\"SUBTRACT\"}"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.balance", is(3)));
     }
 }
