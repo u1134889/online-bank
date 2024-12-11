@@ -71,5 +71,6 @@ Beyond that, it is desirable to create an online banking application that meets 
 
 - `mvn package`
 - `docker push "localhost:5000/rogosienski/online-bank-backend:$(mvn help:evaluate "-Dexpression=project.version" -q -DforceStdout)"`
-- `tofu -chdir=infrastructure/src/main/tofu plan -var="backend_version=$(mvn help:evaluate "-Dexpression=project.version" -q -DforceStdout)"`
-- `tofu -chdir=infrastructure/src/main/tofu apply -var="backend_version=$(mvn help:evaluate "-Dexpression=project.version" -q -DforceStdout)"`
+- `tofu -chdir=infrastructure/src/main/tofu plan`
+- `tofu -chdir=infrastructure/src/main/tofu apply`
+- `minikube service online-bank-deployment --url -n online-bank-namespace`

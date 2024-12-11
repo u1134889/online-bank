@@ -13,11 +13,11 @@ provider "kubernetes" {
 
 locals {
     app_name = "online-bank"
+    parent_pom_path = abspath("${path.module}/../../../../pom.xml")
 }
 
-variable "backend_version" {
-    description = "The tag of the backend docker image to pull"
-    type = string
+data "external" "backend_version" {
+    program = ["pwsh", "-c", "$(mvn help:evaluate '-Dexpression=project.version' -q -DforceStdout -f=${local.parent_pom_path}) | % { [PSCustomObject]@{backend_version = $_} } | ConvertTo-Json -Compress"]
 }
 
 resource "kubernetes_namespace" "online_bank" {
@@ -47,7 +47,7 @@ resource "kubernetes_deployment" "online_bank" {
             spec {
                 container {
                     name = "${local.app_name}-container"
-                    image = "localhost:5000/rogosienski/online-bank-backend:${var.backend_version}"
+                    image = "localhost:5000/rogosienski/online-bank-backend:${data.external.backend_version.result.backend_version}"
                     port {
                         container_port = 8080
                     }
